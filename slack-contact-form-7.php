@@ -64,10 +64,15 @@ function wp_slack_wpcf7_submit( $events ) {
 			);
 
 			if ( $sent ) {
+	      $submission = WPCF7_Submission::get_instance();
+        $posted_data = $submission->get_posted_data();
+        $name = $posted_data["your-name"];
+        $subject = $posted_data["your-email"];
+        $message = $posted_data["your-message"];
 				return apply_filters( 'slack_wpcf7_submit_message',
 					sprintf(
-						__( 'Someone just sent a message through *%s* _Contact Form 7_. Check your email!', 'slack' ),
-						is_callable( array( $form, 'title' ) ) ? $form->title() : $form->title
+						__( "Someone just sent a message through *%s* from the website \nFrom: %s\nSubject: %s\n\nMessage:\n%s\n", 'slack' ),
+						is_callable( array( $form, 'title' ) ) ? $form->title() : $form->title, $name, $subject,$message
 					),
 					$form,
 					$result
